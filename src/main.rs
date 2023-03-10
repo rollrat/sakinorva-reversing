@@ -8,6 +8,45 @@ struct Question {
     description: String,
 }
 
+mod sakinorva {
+    use std::collections::HashMap;
+
+    use scraper::{Html, Selector};
+
+    #[derive(Debug)]
+    pub struct FunctionsInfo {
+        raw_html: String,
+    }
+
+    impl FunctionsInfo {
+        pub fn new(raw_html: String) -> FunctionsInfo {
+            FunctionsInfo { raw_html }
+        }
+
+        pub fn parse_features(&self) -> HashMap<String, f32> {
+            let mut result = HashMap::new();
+
+            let document = Html::parse_document(&self.raw_html);
+
+            let binding = Selector::parse("#my_results td").unwrap();
+            let mut iter = document.select(&binding).take(16);
+
+            while let Some(x) = iter.next() {
+                if let Some(y) = iter.next() {
+                    result.insert(
+                        String::from(&x.text().next().unwrap()[0..2]),
+                        y.text().next().unwrap().parse::<f32>().unwrap(),
+                    );
+                }
+            }
+
+            result
+        }
+    }
+}
+
+use sakinorva::*;
+
 #[tokio::main]
 async fn main() {
     let qs = load_questions().await;
@@ -16,7 +55,9 @@ async fn main() {
         println!("{} {}", q.code, q.description);
     }
 
-    post_functions([("q1", 5)].iter().cloned().collect::<HashMap<&str, i32>>()).await;
+    let f = post_functions([("q1", 5)].iter().cloned().collect::<HashMap<&str, i32>>()).await;
+
+    println!("{:#?}", f.parse_features());
 }
 
 async fn load_questions() -> Vec<Question> {
@@ -52,7 +93,7 @@ async fn load_questions() -> Vec<Question> {
     result
 }
 
-async fn post_functions(query: HashMap<&str, i32>) {
+async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
     let client = reqwest::Client::new();
     let res = client
         .post("https://sakinorva.net/functions?lang=kr")
@@ -67,7 +108,8 @@ async fn post_functions(query: HashMap<&str, i32>) {
         ))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .send()
-        .await;
+        .await
+        .unwrap();
 
-    println!("{}", res.unwrap().text().await.unwrap());
+    FunctionsInfo::new(res.text().await.unwrap())
 }
