@@ -2,6 +2,8 @@
 
 Sakinorva Cognitive Function Test Reversing Project
 
+https://sakinorva.net/functions?lang=kr
+
 ## Plan
 
 ```
