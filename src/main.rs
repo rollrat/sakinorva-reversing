@@ -143,22 +143,29 @@ mod sakinorva {
     pub async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
         let client = reqwest::Client::new();
         let res = client
-        .post("https://sakinorva.net/functions?lang=kr")
-        .body(format!(
-            "{}&{}",
-            query
-                .iter()
-                .map(|x| format!("{}={}", x.0, x.1))
-                .collect::<Vec<String>>()
-                .join("&"),
-            "cons=0&age=&idmbti=&enneagram=&comments=&submit=%28%EA%B2%B0%EA%B3%BC+%EC%A0%9C%EC%B6%9C%29"
-        ))
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .send()
-        .await
-        .unwrap();
+            .post("https://sakinorva.net/functions?lang=kr")
+            .body(format!(
+                "{}&{}",
+                query
+                    .iter()
+                    .map(|x| format!("{}={}", x.0, x.1))
+                    .collect::<Vec<String>>()
+                    .join("&"),
+                "cons=0&age=&idmbti=&enneagram=&comments=&submit=%28%EA%B2%B0%EA%B3%BC+%EC%A0%9C%EC%B6%9C%29"
+            ))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .send()
+            .await
+            .unwrap();
 
-        FunctionsInfo::new(res.text().await.unwrap())
+        let txt = res.text().await.unwrap().replace(
+            "/imgarchive/mute_typology.png",
+            "https://sakinorva.net/imgarchive/mute_typology.png",
+        );
+
+        fs::write("last.html", &txt).unwrap();
+
+        FunctionsInfo::new(txt)
     }
 
     #[derive(Debug)]
@@ -265,12 +272,12 @@ async fn main() {
     let mbti = get_functions_from_features(Features {
         ti: 0,
         te: 0,
-        si: 0,
+        si: -12,
         se: 0,
         ni: 0,
-        ne: 0,
-        fi: 0,
-        fe: 0,
+        ne: 12,
+        fi: 12,
+        fe: 12,
     })
     .await;
 
