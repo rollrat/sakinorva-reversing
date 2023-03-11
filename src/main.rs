@@ -109,6 +109,21 @@ mod sakinorva {
         }
     }
 
+    impl MbtiFitness {
+        pub fn new(e: f32, n: f32, f: f32, j: f32) -> MbtiFitness {
+            MbtiFitness(e, n, f, j)
+        }
+
+        pub fn diff_with(&self, other: &MbtiFitness) -> f32 {
+            let p = self.0 * other.0 + self.1 * other.1 + self.2 * other.2 + self.3 * other.3;
+
+            let cl = self.0 * self.0 + self.1 * self.1 + self.2 * self.2 + self.3 * self.3;
+            let cr = other.0 * other.0 + other.1 * other.1 + other.2 * other.2 + other.3 * other.3;
+
+            p / (cl.sqrt() * cr.sqrt())
+        }
+    }
+
     pub async fn load_questions() -> Vec<Question> {
         if path::Path::new("questions.json").exists() {
             let q = fs::read_to_string("questions.json").unwrap();
@@ -333,5 +348,9 @@ async fn main() {
 
     println!("{:#?}", mbti.parse_features());
     println!("{}", mbti.parse_myers_letter_type());
-    println!("{:#?}", mbti.parse_myers_letter_type_with_fitness());
+    println!(
+        "{:#?}",
+        mbti.parse_myers_letter_type_with_fitness()
+            .diff_with(&MbtiFitness::new(1.0, 0.3, -0.1, 0.2))
+    );
 }
