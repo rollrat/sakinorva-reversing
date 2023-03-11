@@ -189,19 +189,12 @@ mod sakinorva {
         let mut result: HashMap<String, i32> = HashMap::new();
 
         let mut insert_questions = |feature: &str, score: i32| {
-            if score < 0 || score > 60 {
+            if score < 0 || score > 12 {
                 panic!("Adjust specific feature to zero or 60 below!");
             }
 
-            let mut remain_score = score;
-
-            for qs in inv_table.get(feature).unwrap() {
-                if remain_score <= 0 {
-                    break;
-                }
-
-                result.insert(qs.clone(), remain_score.min(5));
-                remain_score -= 5;
+            for qs in inv_table.get(feature).unwrap().iter().take(score as usize) {
+                result.insert(qs.clone(), 5);
             }
         };
 
@@ -234,14 +227,14 @@ use sakinorva::*;
 #[tokio::main]
 async fn main() {
     let mbti = get_functions_from_features(Features {
-        ti: 30,
-        te: 30,
-        si: 30,
-        se: 30,
-        ni: 30,
-        ne: 30,
-        fi: 30,
-        fe: 30,
+        ti: 6,
+        te: 6,
+        si: 6,
+        se: 6,
+        ni: 6,
+        ne: 6,
+        fi: 6,
+        fe: 6,
     })
     .await;
 
