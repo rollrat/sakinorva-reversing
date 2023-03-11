@@ -44,6 +44,23 @@ mod sakinorva {
 
             result
         }
+
+        pub fn parse_myers_letter_type(&self) -> String {
+            let document = Html::parse_document(&self.raw_html);
+
+            let binding = Selector::parse("#my_results td").unwrap();
+
+            String::from(
+                document
+                    .select(&binding)
+                    .last()
+                    .unwrap()
+                    .text()
+                    .map(|x| String::from(x))
+                    .collect::<Vec<String>>()
+                    .join(""),
+            )
+        }
     }
 }
 
@@ -51,7 +68,19 @@ use sakinorva::*;
 
 #[tokio::main]
 async fn main() {
-    load_questions_with_feature().await;
+    let qf = load_questions_with_feature().await;
+    let mut m: HashMap<&str, i32> = HashMap::new();
+
+    for q in &qf {
+        let f = q.feature.as_ref().unwrap();
+        *m.entry(&f[..]).or_default() += 1;
+    }
+
+    println!("{:#?}", m);
+
+    let f = post_functions([("q1", 5)].iter().cloned().collect::<HashMap<&str, i32>>()).await;
+
+    println!("{}", f.parse_myers_letter_type());
 }
 
 async fn load_questions() -> Vec<Question> {
