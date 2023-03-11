@@ -1,19 +1,15 @@
-use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, fs, path};
-
-use scraper::{Html, Selector};
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Question {
-    code: String,
-    description: String,
-    feature: Option<String>,
-}
-
 mod sakinorva {
-    use std::collections::HashMap;
+    use serde::{Deserialize, Serialize};
+    use std::{collections::HashMap, fs, path};
 
     use scraper::{Html, Selector};
+
+    #[derive(Debug, Serialize, Deserialize)]
+    pub struct Question {
+        pub code: String,
+        pub description: String,
+        pub feature: Option<String>,
+    }
 
     #[derive(Debug)]
     pub struct FunctionsInfo {
@@ -62,111 +58,91 @@ mod sakinorva {
             )
         }
     }
-}
 
-use sakinorva::*;
+    pub async fn load_questions() -> Vec<Question> {
+        if path::Path::new("questions.json").exists() {
+            let q = fs::read_to_string("questions.json").unwrap();
 
-#[tokio::main]
-async fn main() {
-    let qf = load_questions_with_feature().await;
-    let mut m: HashMap<&str, i32> = HashMap::new();
+            return serde_json::from_str(&q).unwrap();
+        }
 
-    for q in &qf {
-        let f = q.feature.as_ref().unwrap();
-        *m.entry(&f[..]).or_default() += 1;
-    }
+        let mut result = Vec::new();
 
-    println!("{:#?}", m);
-
-    let f = post_functions([("q1", 5)].iter().cloned().collect::<HashMap<&str, i32>>()).await;
-
-    println!("{}", f.parse_myers_letter_type());
-}
-
-async fn load_questions() -> Vec<Question> {
-    if path::Path::new("questions.json").exists() {
-        let q = fs::read_to_string("questions.json").unwrap();
-
-        return serde_json::from_str(&q).unwrap();
-    }
-
-    let mut result = Vec::new();
-
-    let html = reqwest::get("https://sakinorva.net/functions?lang=kr")
-        .await
-        .unwrap()
-        .text()
-        .await
-        .unwrap();
-
-    let document = Html::parse_document(&html);
-    let id_selector = Selector::parse("input").unwrap();
-    let q_selector = Selector::parse("tr > td").unwrap();
-
-    for e in document
-        .select(&Selector::parse("body > form > table:nth-child(9) > tbody > tr").unwrap())
-        .skip(1)
-        .step_by(2)
-    {
-        let x = e.select(&id_selector).next().unwrap();
-        let y = e.select(&q_selector).next().unwrap();
-
-        result.push(Question {
-            code: String::from(x.value().attr("name").unwrap()),
-            description: String::from(y.text().skip(1).next().unwrap()),
-            feature: None,
-        })
-    }
-
-    assert_eq!(result.len(), 96);
-
-    result.sort_by(|a, b| a.code.cmp(&b.code));
-
-    let questions = serde_json::to_string_pretty(&result).unwrap();
-    fs::write("questions.json", questions).unwrap();
-
-    result
-}
-
-async fn load_questions_with_feature() -> Vec<Question> {
-    if path::Path::new("questions-features.json").exists() {
-        let q = fs::read_to_string("questions-features.json").unwrap();
-
-        return serde_json::from_str(&q).unwrap();
-    }
-
-    let mut qs = load_questions().await;
-
-    for q in &mut qs {
-        let f = post_functions(
-            [(&q.code[..], 5)]
-                .iter()
-                .cloned()
-                .collect::<HashMap<&str, i32>>(),
-        )
-        .await;
-
-        let parse_result = f.parse_features();
-        let feature = parse_result
-            .iter()
-            .max_by(|x, y| x.1.total_cmp(y.1))
+        let html = reqwest::get("https://sakinorva.net/functions?lang=kr")
+            .await
             .unwrap()
-            .0;
+            .text()
+            .await
+            .unwrap();
 
-        println!("{}, {}", q.code, &feature);
+        let document = Html::parse_document(&html);
+        let id_selector = Selector::parse("input").unwrap();
+        let q_selector = Selector::parse("tr > td").unwrap();
 
-        q.feature = Some(feature.clone());
+        for e in document
+            .select(&Selector::parse("body > form > table:nth-child(9) > tbody > tr").unwrap())
+            .skip(1)
+            .step_by(2)
+        {
+            let x = e.select(&id_selector).next().unwrap();
+            let y = e.select(&q_selector).next().unwrap();
+
+            result.push(Question {
+                code: String::from(x.value().attr("name").unwrap()),
+                description: String::from(y.text().skip(1).next().unwrap()),
+                feature: None,
+            })
+        }
+
+        assert_eq!(result.len(), 96);
+
+        result.sort_by(|a, b| a.code.cmp(&b.code));
+
+        let questions = serde_json::to_string_pretty(&result).unwrap();
+        fs::write("questions.json", questions).unwrap();
+
+        result
     }
 
-    let questions = serde_json::to_string_pretty(&qs).unwrap();
-    fs::write("questions-features.json", questions).unwrap();
+    pub async fn load_questions_with_feature() -> Vec<Question> {
+        if path::Path::new("questions-features.json").exists() {
+            let q = fs::read_to_string("questions-features.json").unwrap();
 
-    qs
-}
+            return serde_json::from_str(&q).unwrap();
+        }
 
-async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
-    let client = reqwest::Client::new();
-    let res = client
+        let mut qs = load_questions().await;
+
+        for q in &mut qs {
+            let f = post_functions(
+                [(&q.code[..], 5)]
+                    .iter()
+                    .cloned()
+                    .collect::<HashMap<&str, i32>>(),
+            )
+            .await;
+
+            let parse_result = f.parse_features();
+            let feature = parse_result
+                .iter()
+                .max_by(|x, y| x.1.total_cmp(y.1))
+                .unwrap()
+                .0;
+
+            println!("{}, {}", q.code, &feature);
+
+            q.feature = Some(feature.clone());
+        }
+
+        let questions = serde_json::to_string_pretty(&qs).unwrap();
+        fs::write("questions-features.json", questions).unwrap();
+
+        qs
+    }
+
+    pub async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
+        let client = reqwest::Client::new();
+        let res = client
         .post("https://sakinorva.net/functions?lang=kr")
         .body(format!(
             "{}&{}",
@@ -182,5 +158,93 @@ async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
         .await
         .unwrap();
 
-    FunctionsInfo::new(res.text().await.unwrap())
+        FunctionsInfo::new(res.text().await.unwrap())
+    }
+
+    #[derive(Debug)]
+    pub struct Features {
+        pub ti: i32,
+        pub te: i32,
+        pub si: i32,
+        pub se: i32,
+        pub ni: i32,
+        pub ne: i32,
+        pub fi: i32,
+        pub fe: i32,
+    }
+
+    pub async fn get_question_feature_inverse_table<'a>() -> HashMap<String, Vec<String>> {
+        let qf = load_questions_with_feature().await;
+        let mut m: HashMap<String, Vec<String>> = HashMap::new();
+
+        for q in qf {
+            m.entry(q.feature.unwrap()).or_default().push(q.code);
+        }
+
+        m
+    }
+
+    pub async fn create_query_from_features<'a>(feat: Features) -> HashMap<String, i32> {
+        let inv_table = get_question_feature_inverse_table().await;
+        let mut result: HashMap<String, i32> = HashMap::new();
+
+        let mut insert_questions = |feature: &str, score: i32| {
+            if score < 0 || score > 60 {
+                panic!("Adjust specific feature to zero or 60 below!");
+            }
+
+            let mut remain_score = score;
+
+            for qs in inv_table.get(feature).unwrap() {
+                if remain_score <= 0 {
+                    break;
+                }
+
+                result.insert(qs.clone(), remain_score.min(5));
+                remain_score -= 5;
+            }
+        };
+
+        insert_questions("Ti", feat.ti);
+        insert_questions("Te", feat.te);
+        insert_questions("Si", feat.si);
+        insert_questions("Se", feat.se);
+        insert_questions("Ni", feat.ni);
+        insert_questions("Ne", feat.ne);
+        insert_questions("Fi", feat.fi);
+        insert_questions("Fe", feat.fe);
+
+        result
+    }
+
+    pub async fn get_functions_from_features(feat: Features) -> FunctionsInfo {
+        post_functions(
+            create_query_from_features(feat)
+                .await
+                .iter()
+                .map(|(x, y)| (&x[..], *y))
+                .collect::<HashMap<&str, i32>>(),
+        )
+        .await
+    }
+}
+
+use sakinorva::*;
+
+#[tokio::main]
+async fn main() {
+    let mbti = get_functions_from_features(Features {
+        ti: 30,
+        te: 30,
+        si: 30,
+        se: 30,
+        ni: 30,
+        ne: 30,
+        fi: 30,
+        fe: 30,
+    })
+    .await;
+
+    println!("{:#?}", mbti.parse_features());
+    println!("{}", mbti.parse_myers_letter_type());
 }
