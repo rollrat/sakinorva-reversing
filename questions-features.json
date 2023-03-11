@@ -1,0 +1,482 @@
+[
+  {
+    "code": "q1",
+    "description": " 당신은 매우 개인주의적이고 스스로의 독특함에 자부심을 가진다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q10",
+    "description": " 당신은 과거의 경험에만 의존해서 현재의 행동을 결정한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q11",
+    "description": " 당신은 대화를 하다가 옆길로 새는 경향이 있다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q12",
+    "description": " 당신은 \"지금 이 순간\"을 살아간다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q13",
+    "description": " 당신은 할 말을 아무거나 쉽게 생각해낼 수 있다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q14",
+    "description": " 당신은 현재의 경험을 과거의 경험과 연관짓는다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q15",
+    "description": " 당신은 변화를 싫어한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q16",
+    "description": " 당신은 너무나도 많은 가능성이 보여서 한 가지에 전념하는 것을 어려워한다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q17",
+    "description": " 당신은 전통과 책임을 아주 중요시한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q18",
+    "description": " 당신은 현실 세계와 직접적인 관련이 없는 것을 상상한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q19",
+    "description": " 당신은 남들에게 이기적이고 자기중심적인 사람으로 보이기도 한다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q2",
+    "description": " 당신은 디테일과 과거의 경험을 아주 중요시한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q20",
+    "description": " 당신은 관념적인 것에 끌리고 의미에 집착하기도 한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q21",
+    "description": " 당신은 내면의 논리 체계, 이론, 시스템을 만들어서 주변 세계를 설명한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q22",
+    "description": " 당신은 갑자기 결론이 튀어나오고, 자기도 모르게 정답을 깨닫곤 한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q23",
+    "description": " 당신은 토론을 이기는 것보다 진실을 아는 것이 더 중요하다고 생각한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q24",
+    "description": " 당신은 남들에게 가식적이고 교활한 사람으로 보이기도 한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q25",
+    "description": " 당신은 확실한 사실과 데이터를 그 무엇보다 믿는다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q26",
+    "description": " 당신은 불확실하고 낯선 것을 불안해한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q27",
+    "description": " 당신은 객관적인 근거를 이용해서 자신의 주장을 뒷받침한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q28",
+    "description": " 당신은 질문에 가장 먼저 반응한다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q29",
+    "description": " 당신은 자기 신념을 반대하는 사람을 마주하면 완고하고 단호해진다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q3",
+    "description": " 당신은 눈 앞에 있는 것과 익숙한 것의 디테일이 서로 맞는지 틀린지 잘 포착한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q30",
+    "description": " 당신은 신비로운 무의식의 세계를 상당히 믿는다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q31",
+    "description": " 당신은 사회의 화합을 매우 중요시하고 화합을 유지하기 위해 노력한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q32",
+    "description": " 당신은 남들을 도와주려고 하고, 그러느라 자신에게 필요한 것은 잊어버리기도 한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q33",
+    "description": " 당신은 일을 시작할 때는 열정적인 관심을 보이지만, 더 이상 참신하게 느껴지지 않으면 바로 그만둔다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q34",
+    "description": " 당신은 무엇이든 의문을 품는다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q35",
+    "description": " 당신은 매우 객관적이고 \"있는 그대로\" 얘기한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q36",
+    "description": " 당신은 남들의 어려움에 쉽게 공감한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q37",
+    "description": " 당신은 다른 사람이 필요한 것을 쉽게 알아챌 수 있다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q38",
+    "description": " 당신은 자기 자신을 솔직하고 진실되게 표현한다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q39",
+    "description": " 당신은 자신만의 이론적인 생각과 맞지 않는 정보에는 적응하지 못할 때도 있다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q4",
+    "description": " 당신은 미적감각이 있고 고급진 예술, 음악, 음식 등을 좋아한다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q40",
+    "description": " 당신은 혼자 문제를 처리하고, 다른 사람들과 거리를 둔 채 판단을 내린다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q41",
+    "description": " 당신은 남들에게 진짜로 공감한 후에야 그 공감을 표현한다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q42",
+    "description": " 당신은 새롭고 자극적인 경험을 즐긴다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q43",
+    "description": " 당신은 지속적이고 규칙적인 일상을 따른다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q44",
+    "description": " 당신은 창의적이고, 한 가지 상황에서도 다양한 아이디어를 제안할 수 있다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q45",
+    "description": " 당신은 과거나 미래가 아닌, 현재를 살아간다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q46",
+    "description": " 당신은 새로운 개념을 이해할 때는 다른 기존의 개념과 패턴을 그리면서 논리적으로 납득한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q47",
+    "description": " 당신은 카리스마를 내뿜고, 남들에게 매력적으로 보인다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q48",
+    "description": " 당신은 뛰어난 문제 해결사이며 어떤 문제를 깊게 분석하는 능력이 탁월하다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q49",
+    "description": " 당신은 한꺼번에 많은 일을 시작하지만, 끝내는 일은 적다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q5",
+    "description": " 당신은 신체 내부의 감각을 잘 알아채고 몸이 필요한 것에 맞춰 행동한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q50",
+    "description": " 당신은 취미로 정리정돈을 좋아한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q51",
+    "description": " 당신은 자신의 직관이 자주 오해받는다고 느낀다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q52",
+    "description": " 당신은 맹하거나 산만하다는 얘기를 듣기도 한다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q53",
+    "description": " 당신은 (시간이 걸리더라도) 직접 실행하기 전에 완벽한 해결책이 나오길 바란다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q54",
+    "description": " 당신은 계속해서 스스로 목표를 설정한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q55",
+    "description": " 당신은 다른 외부의 기준과는 상관없는 자신만의 내면의 도덕적인 규칙이 있다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q56",
+    "description": " 당신은 새로운 정보를 설명하기 위해 내면의 논리를 고치고, 새로운 정보와 맞지 않으면 논리를 다시 평가하기도 한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q57",
+    "description": " 당신은 작은 디테일에 신경이 쓰이곤 한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q58",
+    "description": " 당신은 자유 시간이 생기면 어색해하고 의욕이 없어진다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q59",
+    "description": " 당신은 은유를 사용해서 새로운 아이디어를 얘기한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q6",
+    "description": " 당신은 결과가 수단을 정당화할 수 있다는 주장에 동의하곤 한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q60",
+    "description": " 당신은 모험을 즐긴다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q61",
+    "description": " 당신은 남의 바디랭기지를 읽고 대화를 원하는 방향으로 이끌 수 있다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q62",
+    "description": " 당신은 남들에게 참견 많고 고압적인 사람으로 보이기도 한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q63",
+    "description": " 당신은 스스로에게 솔직하다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q64",
+    "description": " 당신은 미래에 대한 예감과 직관이 자주 생기고 실제로 맞아 떨어진다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q65",
+    "description": " 당신은 수많은 디테일 속에서도 큰 그림을 본다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q66",
+    "description": " 당신은 비유와 직유를 사용해서 새로운 아이디어를 얘기한다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q67",
+    "description": " 당신은 자신을 체계적인 사람이고 문제가 커지지 않도록 통제할 수 있다고 생각한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q68",
+    "description": " 당신은 무모해보이기도 하고 의도치 않게 주변 사람들을 다치게 하기도 한다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q69",
+    "description": " 당신은 남들에게 예민하고 우울한 사람으로 보이기도 한다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q7",
+    "description": " 당신은 무엇인가를 \"그냥\" 알고 있지만 의식적인 언어로 설명하기는 힘들어한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q70",
+    "description": " 당신은 언제나 사람들과 세련되게 대화하려고 한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q71",
+    "description": " 가식적인 사람은 불쾌하다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q72",
+    "description": " 당신은 방향감각이 뛰어나고 낯선 곳에서도 길을 곧장 찾을 수 있다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q73",
+    "description": " 당신은 어떤 것을 좋거나 나쁘거나 둘 중 하나라고 보는 경향이 있다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q74",
+    "description": " 당신은 효율성과 생산성을 위해 기존의 시스템을 정리한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q75",
+    "description": " 당신은 자신과 다르게 생각하는 사람들과 얘기하는걸 어려워한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q76",
+    "description": " 당신은 스스로를 실용적이고 현실적인, 망상하지 않는 사람이라고 생각한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q77",
+    "description": " 당신은 사람들을 실망시키느니 문제를 돌려 말할 것이다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q78",
+    "description": " 당신은 이 세상에 유일하게 남은 진정한 착한 사람은 자기 자신뿐이라고 느낀다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q79",
+    "description": " 당신은 사람들에게 자기 아이디어를 얘기하는걸 어려워한다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q8",
+    "description": " 당신은 다른 사람들과 공동체로써 함께 대화할 때 강한 동질감을 느낀다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q80",
+    "description": " 당신은 상징적이고 신비로운 미지의 주제에 끌린다.",
+    "feature": "Ni"
+  },
+  {
+    "code": "q81",
+    "description": " 당신은 한 가지 주제에 집중하는 것을 어려워한다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q82",
+    "description": " 당신은 진실과 논리를 그 무엇보다 중요시한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q83",
+    "description": " 당신은 언제나 계속해서 논리적인 사람이었다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q84",
+    "description": " 당신은 방 안에 있으면 스스로의 존재감이 크게 느껴진다고 믿는다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q85",
+    "description": " 당신은 바깥 세상의 정보를 가공하지 않고 그대로 받아들인다.",
+    "feature": "Se"
+  },
+  {
+    "code": "q86",
+    "description": " 당신은 관용을 중요시하고 모든 사람을 공동체에 받아들이려고 한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q87",
+    "description": " 당신은 토론을 이기기 위해서라면 무엇이든 한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q88",
+    "description": " 당신은 새롭고 참신하고 독창적인 것들에 끌린다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q89",
+    "description": " 당신은 대체로 다른 사람들과 협력해서 문제를 처리하고 다른 사람들과 소통하면서 판단을 내린다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q9",
+    "description": " 당신은 직설적이고 본론부터 단도직입적으로 얘기한다.",
+    "feature": "Te"
+  },
+  {
+    "code": "q90",
+    "description": " 당신은 남들을 도와준 것이 인정받지 못하면 실망한다.",
+    "feature": "Fe"
+  },
+  {
+    "code": "q91",
+    "description": " 당신은 세상을 보면 탐험되기만을 기다리는 수많은 가능성들이 보인다.",
+    "feature": "Ne"
+  },
+  {
+    "code": "q92",
+    "description": " 당신은 현실 세계에 사는것보다 꿈 속에서 사는 것을 좋아한다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q93",
+    "description": " 당신은 너무 하던 대로만 한다는 말을 듣기도 한다.",
+    "feature": "Si"
+  },
+  {
+    "code": "q94",
+    "description": " 당신은 단체의 규칙을 무조건 따르는 걸 좋아하지 않는다.",
+    "feature": "Fi"
+  },
+  {
+    "code": "q95",
+    "description": " 당신은 한 주제를 깊이 탐구하고, 깊이 탐구하는 그 자체가 목적이다.",
+    "feature": "Ti"
+  },
+  {
+    "code": "q96",
+    "description": " 당신은 주변 환경을 잘 알아채고 눈 앞에 있는 것은 잘 놓치지 않는다.",
+    "feature": "Se"
+  }
+]

@@ -1,11 +1,13 @@
-use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, fs, path};
 
 use scraper::{Html, Selector};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Question {
     code: String,
     description: String,
+    feature: Option<String>,
 }
 
 mod sakinorva {
@@ -49,18 +51,16 @@ use sakinorva::*;
 
 #[tokio::main]
 async fn main() {
-    let qs = load_questions().await;
-
-    for q in qs.into_iter() {
-        println!("{} {}", q.code, q.description);
-    }
-
-    let f = post_functions([("q1", 5)].iter().cloned().collect::<HashMap<&str, i32>>()).await;
-
-    println!("{:#?}", f.parse_features());
+    load_questions_with_feature().await;
 }
 
 async fn load_questions() -> Vec<Question> {
+    if path::Path::new("questions.json").exists() {
+        let q = fs::read_to_string("questions.json").unwrap();
+
+        return serde_json::from_str(&q).unwrap();
+    }
+
     let mut result = Vec::new();
 
     let html = reqwest::get("https://sakinorva.net/functions?lang=kr")
@@ -85,12 +85,54 @@ async fn load_questions() -> Vec<Question> {
         result.push(Question {
             code: String::from(x.value().attr("name").unwrap()),
             description: String::from(y.text().skip(1).next().unwrap()),
+            feature: None,
         })
     }
 
+    assert_eq!(result.len(), 96);
+
     result.sort_by(|a, b| a.code.cmp(&b.code));
 
+    let questions = serde_json::to_string_pretty(&result).unwrap();
+    fs::write("questions.json", questions).unwrap();
+
     result
+}
+
+async fn load_questions_with_feature() -> Vec<Question> {
+    if path::Path::new("questions-features.json").exists() {
+        let q = fs::read_to_string("questions-features.json").unwrap();
+
+        return serde_json::from_str(&q).unwrap();
+    }
+
+    let mut qs = load_questions().await;
+
+    for q in &mut qs {
+        let f = post_functions(
+            [(&q.code[..], 5)]
+                .iter()
+                .cloned()
+                .collect::<HashMap<&str, i32>>(),
+        )
+        .await;
+
+        let parse_result = f.parse_features();
+        let feature = parse_result
+            .iter()
+            .max_by(|x, y| x.1.total_cmp(y.1))
+            .unwrap()
+            .0;
+
+        println!("{}, {}", q.code, &feature);
+
+        q.feature = Some(feature.clone());
+    }
+
+    let questions = serde_json::to_string_pretty(&qs).unwrap();
+    fs::write("questions-features.json", questions).unwrap();
+
+    qs
 }
 
 async fn post_functions(query: HashMap<&str, i32>) -> FunctionsInfo {
