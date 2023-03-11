@@ -220,6 +220,28 @@ mod sakinorva {
         )
         .await
     }
+
+    pub async fn print_irregular_questions() {
+        let mut qs = load_questions().await;
+
+        for q in &mut qs {
+            let f = post_functions(
+                [(&q.code[..], 5)]
+                    .iter()
+                    .cloned()
+                    .collect::<HashMap<&str, i32>>(),
+            )
+            .await;
+
+            let parse_result = f.parse_features();
+            let feature: Vec<(&String, &f32)> =
+                parse_result.iter().filter(|x| x.1.ne(&23.0)).collect();
+
+            if feature.len() > 1 {
+                println!("{}, {:#?}", q.code, &parse_result);
+            }
+        }
+    }
 }
 
 use sakinorva::*;
