@@ -17,15 +17,16 @@ https://sakinorva.net/functions?lang=kr
 #[tokio::main]
 async fn main() {
     let mbti = get_functions_from_features(Features {
-        // range is 1 ~ 12
-        ti: 6,
-        te: 6,
-        si: 6,
-        se: 6,
-        ni: 6,
-        ne: 6,
-        fi: 6,
-        fe: 6,
+        // range is -12 ~ 12
+        // safe range is -11 ~ 11
+        ti: 0,
+        te: 0,
+        si: 0,
+        se: 0,
+        ni: 0,
+        ne: 0,
+        fi: 0,
+        fe: 0,
     })
     .await;
 
@@ -36,16 +37,16 @@ async fn main() {
 
 ```
 {
-    "Ti": 35.0,
-    "Fi": 35.0,
-    "Se": 35.0,
-    "Ni": 35.8,
-    "Te": 35.0,
-    "Si": 35.0,
-    "Ne": 34.2,
-    "Fe": 35.0,
+    "Ne": 23.0,
+    "Ni": 23.0,
+    "Fi": 23.0,
+    "Se": 23.0,
+    "Si": 23.0,
+    "Ti": 23.0,
+    "Fe": 23.0,
+    "Te": 23.0,
 }
-INTP
+ENFJ
 ```
 
 ## Irregulation Question
