@@ -16,6 +16,10 @@ mod sakinorva {
         raw_html: String,
     }
 
+    // E N F J
+    #[derive(Debug)]
+    pub struct MbtiFitness(f32, f32, f32, f32);
+
     impl FunctionsInfo {
         pub fn new(raw_html: String) -> FunctionsInfo {
             FunctionsInfo { raw_html }
@@ -55,6 +59,52 @@ mod sakinorva {
                     .map(|x| String::from(x))
                     .collect::<Vec<String>>()
                     .join(""),
+            )
+        }
+
+        pub fn parse_myers_letter_type_with_fitness(&self) -> MbtiFitness {
+            let document = Html::parse_document(&self.raw_html);
+
+            let binding = Selector::parse("#my_results td").unwrap();
+            let myers_letter_type = document.select(&binding).last().unwrap();
+
+            let mbti = myers_letter_type
+                .text()
+                .map(|x| String::from(x))
+                .collect::<Vec<String>>();
+
+            let fitness_selector = Selector::parse("font > font").unwrap();
+            let letters = myers_letter_type
+                .select(&fitness_selector)
+                .map(|x| {
+                    let fitness_raw =
+                        &x.value().attr("style").unwrap()["color: rgba(255, 255, 255, ".len()..];
+
+                    fitness_raw[..fitness_raw.len() - 1].parse().unwrap()
+                })
+                .collect::<Vec<f32>>();
+
+            MbtiFitness(
+                if mbti[0] == "E" {
+                    letters[0]
+                } else {
+                    -letters[0]
+                },
+                if mbti[1] == "N" {
+                    letters[1]
+                } else {
+                    -letters[1]
+                },
+                if mbti[2] == "F" {
+                    letters[2]
+                } else {
+                    -letters[2]
+                },
+                if mbti[3] == "J" {
+                    letters[3]
+                } else {
+                    -letters[3]
+                },
             )
         }
     }
@@ -209,9 +259,9 @@ mod sakinorva {
                     break;
                 }
 
-                if qs == "q47" || qs == "q69" {
-                    continue;
-                }
+                // if qs == "q47" || qs == "q69" {
+                //     continue;
+                // }
 
                 result.insert(qs.clone(), apply_score);
 
@@ -270,17 +320,18 @@ use sakinorva::*;
 #[tokio::main]
 async fn main() {
     let mbti = get_functions_from_features(Features {
-        ti: 0,
+        ti: 12,
         te: 0,
         si: -12,
         se: 0,
         ni: 0,
         ne: 12,
-        fi: 12,
+        fi: 0,
         fe: 12,
     })
     .await;
 
     println!("{:#?}", mbti.parse_features());
     println!("{}", mbti.parse_myers_letter_type());
+    println!("{:#?}", mbti.parse_myers_letter_type_with_fitness());
 }
