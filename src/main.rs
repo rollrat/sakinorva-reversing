@@ -1,7 +1,11 @@
 mod sakinorva {
     use rand::Rng;
     use serde::{Deserialize, Serialize};
-    use std::{collections::HashMap, fmt, fs, path};
+    use std::{
+        collections::HashMap,
+        fmt::{self, format},
+        fs, path,
+    };
 
     use scraper::{Html, Selector};
 
@@ -113,6 +117,10 @@ mod sakinorva {
                 },
             )
         }
+
+        pub fn save_as_html(&self, file_name: String) {
+            fs::write(format!("{}.html", file_name), &self.raw_html).unwrap();
+        }
     }
 
     impl MbtiFitness {
@@ -214,6 +222,8 @@ mod sakinorva {
         strategy: GeneticFieldStrategy,
         codes: Vec<QuestionCode>,
         mutation_rate: f64,
+        current_max_rate: f32,
+        max_rate_change_count: usize,
     }
 
     impl GeneticField {
@@ -230,6 +240,8 @@ mod sakinorva {
                     .map(|_| QuestionCode::create_random_code())
                     .collect(),
                 mutation_rate,
+                current_max_rate: -1.0,
+                max_rate_change_count: 0,
             }
         }
 
@@ -237,22 +249,25 @@ mod sakinorva {
             let mut fitnesses = Vec::new();
 
             for (pos, code) in self.codes.iter().enumerate() {
-                fitnesses.push(
-                    post_functions(
-                        code.to_query()
-                            .iter()
-                            .map(|(x, y)| (&x[..], *y))
-                            .collect::<HashMap<&str, i32>>(),
-                    )
-                    .await
-                    .parse_myers_letter_type_with_fitness(),
-                );
+                let functions = post_functions(
+                    code.to_query()
+                        .iter()
+                        .map(|(x, y)| (&x[..], *y))
+                        .collect::<HashMap<&str, i32>>(),
+                )
+                .await;
+                fitnesses.push(functions.parse_myers_letter_type_with_fitness());
 
-                print!(
-                    "{} ({: >8.5}) ",
-                    fitnesses.last().unwrap(),
-                    self.target.diff_with(fitnesses.last().unwrap())
-                );
+                let rate = self.target.diff_with(fitnesses.last().unwrap());
+
+                print!("{} ({: >8.5}) ", fitnesses.last().unwrap(), rate);
+
+                if rate > self.current_max_rate {
+                    functions.save_as_html(format!("{} ({})", self.max_rate_change_count, rate));
+
+                    self.max_rate_change_count += 1;
+                    self.current_max_rate = rate;
+                }
 
                 if pos % 10 == 9 {
                     println!("");
