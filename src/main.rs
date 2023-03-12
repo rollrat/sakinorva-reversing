@@ -248,13 +248,15 @@ mod sakinorva {
                     .parse_myers_letter_type_with_fitness(),
                 );
 
-                println!(
-                    "{}/{} -> {} ({})",
-                    pos,
-                    self.codes.len(),
+                print!(
+                    "{} ({: >8.5}) ",
                     fitnesses.last().unwrap(),
                     self.target.diff_with(fitnesses.last().unwrap())
                 );
+
+                if pos % 10 == 9 {
+                    println!("");
+                }
             }
 
             let mut hunting_pool: Vec<usize> = Vec::new();
@@ -497,7 +499,7 @@ async fn main() {
     let mut pool = GeneticField::new(
         // ENFJ
         MbtiFitness::new(1.0, 1.0, 1.0, 1.0),
-        GeneticFieldStrategy::Tangent,
+        GeneticFieldStrategy::Exp,
         0.01,
         100,
     );
