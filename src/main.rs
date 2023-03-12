@@ -1,6 +1,7 @@
 mod sakinorva {
+    use rand::Rng;
     use serde::{Deserialize, Serialize};
-    use std::{collections::HashMap, fs, path};
+    use std::{collections::HashMap, fmt, fs, path};
 
     use scraper::{Html, Selector};
 
@@ -19,6 +20,11 @@ mod sakinorva {
     // E N F J
     #[derive(Debug)]
     pub struct MbtiFitness(f32, f32, f32, f32);
+
+    #[derive(Debug)]
+    pub struct QuestionCode {
+        code: Vec<u8>,
+    }
 
     impl FunctionsInfo {
         pub fn new(raw_html: String) -> FunctionsInfo {
@@ -121,6 +127,78 @@ mod sakinorva {
             let cr = other.0 * other.0 + other.1 * other.1 + other.2 * other.2 + other.3 * other.3;
 
             p / (cl.sqrt() * cr.sqrt())
+        }
+
+        pub fn to_string(&self) -> String {
+            format!(
+                "{}{}{}{}",
+                if self.0 >= 0.0 { "E" } else { "I" },
+                if self.1 >= 0.0 { "N" } else { "S" },
+                if self.2 >= 0.0 { "F" } else { "T" },
+                if self.3 >= 0.0 { "J" } else { "P" }
+            )
+        }
+    }
+
+    impl fmt::Display for MbtiFitness {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            write!(f, "{}", self.to_string())
+        }
+    }
+
+    impl QuestionCode {
+        fn new() -> QuestionCode {
+            QuestionCode { code: vec![0; 96] }
+        }
+
+        pub fn create_random_code() -> QuestionCode {
+            let mut rng = rand::thread_rng();
+            let mut result = QuestionCode::new();
+
+            for i in 0..96 {
+                result.code[i] = rng.gen_range(1..=5);
+            }
+
+            result
+        }
+
+        pub fn crossover(&self, other: &QuestionCode) -> QuestionCode {
+            let mut rng = rand::thread_rng();
+            let mut result = QuestionCode::new();
+
+            let replacement_pos = rng.gen_range(0..96);
+
+            for i in 0..replacement_pos {
+                result.code[i] = self.code[i];
+            }
+
+            for i in replacement_pos..96 {
+                result.code[i] = other.code[i];
+            }
+
+            result
+        }
+
+        pub fn mutate(&mut self, mutation_rate: f64) -> &QuestionCode {
+            let mut rng = rand::thread_rng();
+
+            for i in 0..96 {
+                if rng.gen_bool(mutation_rate) {
+                    self.code[i] = rng.gen_range(1..=5);
+                }
+            }
+
+            self
+        }
+
+        pub fn to_query(&self) -> HashMap<String, i32> {
+            let mut result = HashMap::new();
+
+            for (pos, e) in self.code.iter().enumerate() {
+                result.insert(format!("q{}", pos), *e as i32);
+            }
+
+            result
         }
     }
 
@@ -330,6 +408,8 @@ mod sakinorva {
     }
 }
 
+use std::collections::HashMap;
+
 use sakinorva::*;
 
 #[tokio::main]
@@ -353,4 +433,20 @@ async fn main() {
         mbti.parse_myers_letter_type_with_fitness()
             .diff_with(&MbtiFitness::new(1.0, 0.3, -0.1, 0.2))
     );
+
+    for _ in 0..100 {
+        let code = QuestionCode::create_random_code();
+        let query = code.to_query();
+        let rquery = query
+            .iter()
+            .map(|(x, y)| (&x[..], *y))
+            .collect::<HashMap<&str, i32>>();
+
+        println!(
+            "{}",
+            post_functions(rquery)
+                .await
+                .parse_myers_letter_type_with_fitness()
+        );
+    }
 }
