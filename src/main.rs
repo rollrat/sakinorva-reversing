@@ -202,6 +202,88 @@ mod sakinorva {
         }
     }
 
+    #[derive(Debug)]
+    pub enum GeneticFieldStrategy {
+        Exp,
+        Tangent,
+    }
+
+    #[derive(Debug)]
+    pub struct GeneticField {
+        target: MbtiFitness,
+        strategy: GeneticFieldStrategy,
+        codes: Vec<QuestionCode>,
+        mutation_rate: f64,
+    }
+
+    impl GeneticField {
+        pub fn new(
+            target: MbtiFitness,
+            strategy: GeneticFieldStrategy,
+            mutation_rate: f64,
+            population: i32,
+        ) -> GeneticField {
+            GeneticField {
+                target,
+                strategy,
+                codes: (0..population)
+                    .map(|_| QuestionCode::create_random_code())
+                    .collect(),
+                mutation_rate,
+            }
+        }
+
+        pub async fn evolution(&mut self) {
+            let mut fitnesses = Vec::new();
+
+            for (pos, code) in self.codes.iter().enumerate() {
+                fitnesses.push(
+                    post_functions(
+                        code.to_query()
+                            .iter()
+                            .map(|(x, y)| (&x[..], *y))
+                            .collect::<HashMap<&str, i32>>(),
+                    )
+                    .await
+                    .parse_myers_letter_type_with_fitness(),
+                );
+
+                println!(
+                    "{}/{} -> {} ({})",
+                    pos,
+                    self.codes.len(),
+                    fitnesses.last().unwrap(),
+                    self.target.diff_with(fitnesses.last().unwrap())
+                );
+            }
+
+            let mut hunting_pool: Vec<usize> = Vec::new();
+
+            for (pos, e) in fitnesses.iter().enumerate() {
+                let diff = self.target.diff_with(e);
+                let putup = match &self.strategy {
+                    GeneticFieldStrategy::Exp => ((diff + 1.0) * 6.0).exp() as i32,
+                    GeneticFieldStrategy::Tangent => todo!(),
+                };
+
+                (0..putup).for_each(|_| hunting_pool.push(pos));
+            }
+
+            let mut result_codes: Vec<QuestionCode> = Vec::new();
+            let mut rng = rand::thread_rng();
+
+            for _ in 0..self.codes.len() {
+                let p1 = hunting_pool[rng.gen_range(0..hunting_pool.len())];
+                let p2 = hunting_pool[rng.gen_range(0..hunting_pool.len())];
+                let mut n_code = self.codes[p1].crossover(&self.codes[p2]);
+                n_code.mutate(self.mutation_rate);
+                result_codes.push(n_code);
+            }
+
+            self.codes = result_codes;
+        }
+    }
+
     pub async fn load_questions() -> Vec<Question> {
         if path::Path::new("questions.json").exists() {
             let q = fs::read_to_string("questions.json").unwrap();
@@ -408,45 +490,20 @@ mod sakinorva {
     }
 }
 
-use std::collections::HashMap;
-
 use sakinorva::*;
 
 #[tokio::main]
 async fn main() {
-    let mbti = get_functions_from_features(Features {
-        ti: 12,
-        te: 0,
-        si: -12,
-        se: 0,
-        ni: 0,
-        ne: 12,
-        fi: 0,
-        fe: 12,
-    })
-    .await;
-
-    println!("{:#?}", mbti.parse_features());
-    println!("{}", mbti.parse_myers_letter_type());
-    println!(
-        "{:#?}",
-        mbti.parse_myers_letter_type_with_fitness()
-            .diff_with(&MbtiFitness::new(1.0, 0.3, -0.1, 0.2))
+    let mut pool = GeneticField::new(
+        // ENFJ
+        MbtiFitness::new(1.0, 1.0, 1.0, 1.0),
+        GeneticFieldStrategy::Tangent,
+        0.01,
+        100,
     );
 
-    for _ in 0..100 {
-        let code = QuestionCode::create_random_code();
-        let query = code.to_query();
-        let rquery = query
-            .iter()
-            .map(|(x, y)| (&x[..], *y))
-            .collect::<HashMap<&str, i32>>();
-
-        println!(
-            "{}",
-            post_functions(rquery)
-                .await
-                .parse_myers_letter_type_with_fitness()
-        );
+    for i in 0..100 {
+        println!("Loop {}", i + 1);
+        pool.evolution().await;
     }
 }
