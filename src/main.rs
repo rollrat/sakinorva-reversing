@@ -128,15 +128,17 @@ mod sakinorva {
             MbtiFitness(e, n, f, j)
         }
 
+        // return 0.0 ~ 1.0
         pub fn diff_with(&self, other: &MbtiFitness) -> f32 {
             let a1 = self.0 - other.0;
             let a2 = self.1 - other.1;
             let a3 = self.2 - other.2;
             let a4 = self.3 - other.3;
 
-            (a1 * a1 + a2 * a2 + a3 * a3 + a4 * a4).sqrt() / 8.0
+            1.0 - (a1 * a1 + a2 * a2 + a3 * a3 + a4 * a4).sqrt() / 8.0
         }
 
+        // return -1.0 ~ 1.0
         pub fn diff_with_cos_distance(&self, other: &MbtiFitness) -> f32 {
             let p = self.0 * other.0 + self.1 * other.1 + self.2 * other.2 + self.3 * other.3;
 
@@ -290,7 +292,7 @@ mod sakinorva {
                 let putup = match &self.strategy {
                     GeneticFieldStrategy::Exp => ((diff + 1.0) * 6.0).exp() as i32,
                     GeneticFieldStrategy::Tangent => {
-                        ((diff * std::f32::consts::PI / 2.0).tan()) as i32
+                        (diff * std::f32::consts::PI / 2.0).tan() as i32
                     }
                 };
 
