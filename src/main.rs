@@ -228,9 +228,16 @@ mod sakinorva {
     }
 
     #[derive(Debug)]
+    pub enum GeneticCompareStrategy {
+        Cosine,
+        Euclidean,
+    }
+
+    #[derive(Debug)]
     pub struct GeneticField {
         target: MbtiFitness,
-        strategy: GeneticFieldStrategy,
+        field_strategy: GeneticFieldStrategy,
+        compare_strategy: GeneticCompareStrategy,
         codes: Vec<QuestionCode>,
         mutation_rate: f64,
         current_max_rate: f32,
@@ -240,13 +247,15 @@ mod sakinorva {
     impl GeneticField {
         pub fn new(
             target: MbtiFitness,
-            strategy: GeneticFieldStrategy,
+            field_strategy: GeneticFieldStrategy,
+            compare_strategy: GeneticCompareStrategy,
             mutation_rate: f64,
             population: i32,
         ) -> GeneticField {
             GeneticField {
                 target,
-                strategy,
+                field_strategy,
+                compare_strategy,
                 codes: (0..population)
                     .map(|_| QuestionCode::create_random_code())
                     .collect(),
@@ -269,7 +278,14 @@ mod sakinorva {
                 .await;
                 fitnesses.push(functions.parse_myers_letter_type_with_fitness());
 
-                let rate = self.target.diff_with(fitnesses.last().unwrap());
+                let rate = match &self.compare_strategy {
+                    GeneticCompareStrategy::Cosine => self
+                        .target
+                        .diff_with_cos_distance(fitnesses.last().unwrap()),
+                    GeneticCompareStrategy::Euclidean => {
+                        self.target.diff_with(fitnesses.last().unwrap())
+                    }
+                };
 
                 print!("{} ({: >8.5}) ", fitnesses.last().unwrap(), rate);
 
@@ -288,8 +304,11 @@ mod sakinorva {
             let mut hunting_pool: Vec<usize> = Vec::new();
 
             for (pos, e) in fitnesses.iter().enumerate() {
-                let diff = self.target.diff_with(e);
-                let putup = match &self.strategy {
+                let diff = match &self.compare_strategy {
+                    GeneticCompareStrategy::Cosine => self.target.diff_with_cos_distance(e),
+                    GeneticCompareStrategy::Euclidean => self.target.diff_with(e),
+                };
+                let putup = match &self.field_strategy {
                     GeneticFieldStrategy::Exp => ((diff + 1.0) * 6.0).exp() as i32,
                     GeneticFieldStrategy::Tangent => {
                         (diff * std::f32::consts::PI / 2.0).tan() as i32
@@ -530,6 +549,7 @@ async fn main() {
         // ENFJ
         MbtiFitness::new(1.0, 1.0, 1.0, 1.0),
         GeneticFieldStrategy::Tangent,
+        GeneticCompareStrategy::Euclidean,
         0.01,
         100,
     );
