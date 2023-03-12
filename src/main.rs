@@ -280,10 +280,14 @@ mod sakinorva {
                 let diff = self.target.diff_with(e);
                 let putup = match &self.strategy {
                     GeneticFieldStrategy::Exp => ((diff + 1.0) * 6.0).exp() as i32,
-                    GeneticFieldStrategy::Tangent => todo!(),
+                    GeneticFieldStrategy::Tangent => {
+                        ((diff * std::f32::consts::PI / 2.0).tan()) as i32
+                    }
                 };
 
-                (0..putup).for_each(|_| hunting_pool.push(pos));
+                if putup >= 0 {
+                    (0..putup).for_each(|_| hunting_pool.push(pos));
+                }
             }
 
             let mut result_codes: Vec<QuestionCode> = Vec::new();
@@ -514,7 +518,7 @@ async fn main() {
     let mut pool = GeneticField::new(
         // ENFJ
         MbtiFitness::new(1.0, 1.0, 1.0, 1.0),
-        GeneticFieldStrategy::Exp,
+        GeneticFieldStrategy::Tangent,
         0.01,
         100,
     );
