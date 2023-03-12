@@ -301,9 +301,10 @@ mod sakinorva {
                 }
             }
 
-            let mut hunting_pool: Vec<usize> = Vec::new();
+            let mut acc_hunting_pool: Vec<u64> = Vec::new();
+            let mut acc_count: u64 = 0;
 
-            for (pos, e) in fitnesses.iter().enumerate() {
+            for e in fitnesses.iter() {
                 let diff = match &self.compare_strategy {
                     GeneticCompareStrategy::Cosine => self.target.diff_with_cos_distance(e),
                     GeneticCompareStrategy::Euclidean => self.target.diff_with(e),
@@ -316,16 +317,28 @@ mod sakinorva {
                 };
 
                 if putup >= 0 {
-                    (0..putup).for_each(|_| hunting_pool.push(pos));
+                    acc_count += putup as u64;
                 }
+
+                acc_hunting_pool.push(acc_count);
             }
 
             let mut result_codes: Vec<QuestionCode> = Vec::new();
             let mut rng = rand::thread_rng();
 
+            fn lower_bound<T: Ord>(arr: &[T], x: &T) -> usize {
+                match arr.binary_search_by(|y| y.cmp(x)) {
+                    Ok(idx) => idx,
+                    Err(idx) => idx,
+                }
+            }
+
             for _ in 0..self.codes.len() {
-                let p1 = hunting_pool[rng.gen_range(0..hunting_pool.len())];
-                let p2 = hunting_pool[rng.gen_range(0..hunting_pool.len())];
+                let r1 = rng.gen_range(0..acc_hunting_pool.len()) as u64;
+                let p1 = lower_bound(&acc_hunting_pool[..], &r1);
+                let r2 = rng.gen_range(0..acc_hunting_pool.len()) as u64;
+                let p2 = lower_bound(&acc_hunting_pool[..], &r2);
+
                 let mut n_code = self.codes[p1].crossover(&self.codes[p2]);
                 n_code.mutate(self.mutation_rate);
                 result_codes.push(n_code);
@@ -547,7 +560,7 @@ use sakinorva::*;
 async fn main() {
     let mut pool = GeneticField::new(
         // ENFJ
-        MbtiFitness::new(1.0, 1.0, 1.0, 1.0),
+        MbtiFitness::new(1.0, 1.0, -1.0, -1.0),
         GeneticFieldStrategy::Tangent,
         GeneticCompareStrategy::Euclidean,
         0.01,
